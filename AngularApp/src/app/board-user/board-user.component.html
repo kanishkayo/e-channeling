@@ -1,0 +1,212 @@
+<div class="container-fluid mt-2">
+
+    <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="appointment-tab" data-toggle="tab" href="#appointment" role="tab" aria-controls="appointment" aria-selected="true">Appointments</a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link " id="history-tab" data-toggle="tab" href="#history" role="tab" aria-controls="history" aria-selected="false">Medical History</a>
+        </li> -->
+        
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active mt-2" id="appointment" role="tabpanel" aria-labelledby="appointment-tab">
+
+            <div class="card">
+                <div class="card-body">
+                  
+                
+            <h3>Appointment Request</h3>
+            <!-- <button (click)="clickMyButton()">Hi friend</button> -->
+            
+            <form
+            name="formAppointment"
+            (ngSubmit)="f.form.valid && onSubmitSaveAppointment()"
+            #f="ngForm"
+            novalidate
+            >
+            <div class="row">
+            <div class="col-md-4 form-group">
+            <label for="username">Service Category</label>
+            <select class="form-control" name="service" [(ngModel)]="formAppointment.service" #service="ngModel" (change)="getDoctors()">
+                <option *ngFor="let service of userService.serviceList" [ngValue]="service._id">
+                    {{ service.serviceName }}
+                </option>
+            </select>
+            </div>
+            <div class="col-md-4 form-group" *ngIf="showDoctorSelectArea">
+                <label for="username">Doctors</label>
+                  <select class="form-control" name="doctor" [(ngModel)]="formAppointment.doctor" #doctor="ngModel" (change)="getDoctorCenters()">
+                    <option *ngFor="let doctor of userService.doctorsList" [ngValue]="doctor._id">
+                        {{ doctor.name }}
+                    </option>
+                  </select>
+            </div>
+            <div class="col-md-4 form-group" *ngIf="showDoctorCenterSelectArea">
+                <label for="username">Hospital Branch</label>
+                <select class="form-control" name="center" [(ngModel)]="formAppointment.center" #center="ngModel">
+                    <option *ngFor="let center of userService.doctorServiceCenterList" [ngValue]="center._id">
+                        {{ center.name }}
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-4 form-group">
+                <label for="username">Appointment Date</label>
+                <input
+                    type="date"
+                    class="form-control"
+                    name="aDate"
+                    [(ngModel)]="formAppointment.aDate"
+                    required
+                    #aDate="ngModel"
+                />
+            </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group m-2">
+                    <button class="btn btn-secondary btn-block" (click)="clearAppointmentForm()">Clear Form</button>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                <div class="form-group m-2">
+                <button class="btn btn-primary btn-block">Save Appointment</button>
+                </div>
+                </div>
+            </div>
+    
+            </form>
+
+            </div>
+        </div>
+
+             <div class="row mt-5">
+                <div class="col-md-6">
+                    <h3>Patient Appointments List</h3>
+                </div>
+                <div class="col-md-12 mt-3">
+                    <table class="table table-sm table-dark table-hover">
+                        <thead>
+                          <tr class="bg-primary">
+                            <th scope="col">No</th>
+                            <th scope="col">Appointment No</th>
+                            <th scope="col">Service Name</th>
+                            <th scope="col">Doctor Name</th>
+                            <th scope="col">Hospital Branch</th>
+                            <th scope="col">Appointment Date</th>
+                            <th scope="col">Service Charges</th>
+                            <th scope="col">Payment Status</th>
+                            <th scope="col">Appointment Status</th>
+                            <th scope="col">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let appointment of allAppointments; index as i;">
+                            <td>{{i+1}}</td>
+                            <td>{{"Appointment-"+appointment._id}}</td>
+                            <td>{{appointment.service.serviceName}}</td>
+                            <td>{{"Dr."+appointment.doctor.name}}</td>
+                            <td>{{appointment.center.name + " - " + appointment.center.location}}</td>
+                            <td>{{appointment.date}}</td>
+                            <td>{{"Rs."+appointment.service.serviceCharges}}</td>
+                            <td>
+                                <h5 *ngIf="appointment.paymentStatus == 'not-paid'"><span class="badge badge-danger">Service Charge Not Paid</span></h5>
+                                <h5 *ngIf="appointment.paymentStatus == 'paid'"><span class="badge badge-success">Service Charge Paid</span></h5>
+                            </td>
+                            <td>
+                                <h5 *ngIf="appointment.status == 'doctor-pending'"><span class="badge badge-warning">Doctor Reviewing</span></h5>
+                                <h5 *ngIf="appointment.status == 'doctor-accept'"><span class="badge badge-success">Doctor Accepted</span></h5>
+                                <h5 *ngIf="appointment.status == 'doctor-rejected'"><span class="badge badge-danger">Doctor Rejected</span></h5>
+                            </td>
+                            <td>
+                                <!-- <button *ngIf="appointment.paymentStatus == 'not-paid'" class="btn btn-info btn-block btn-sm" (click)="checkout(appointment)">Pay Here</button> -->
+                                <!-- <button type="submit" id="payhere-payment" >PayHere Pay</button> -->
+                                <button type="button" *ngIf="appointment.paymentStatus == 'not-paid'" class="btn btn-info btn-block btn-sm" data-toggle="modal" [attr.data-target]="'#paymentDialog'+i">Payhere</button>
+                                
+                                <!-- Doctor action Model Start -->
+                                <div class="modal fade" [attr.id]="'paymentDialog'+i" role="dialog" aria-hidden="false">
+                                    <div class="modal-dialog modal-dialog-scrollable" role="document">
+                                    <div class="modal-content">
+                                        
+                                        <div class="modal-header">
+                                        <h5 class="modal-title text-dark">Payment For Appointment</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form
+                                                name="formAppointmentAction"
+                                                novalidate
+                                            >
+                                            
+                                                <div class="form-group m-2">
+                                                    <label class="text-dark">Service Name - {{appointment.service.serviceName}}</label> <br>
+                                                <label for="service" class="text-dark"> <h3> <b> Rs.{{appointment.service.serviceCharges}} </b></h3></label>
+                                                
+                                                </div>
+
+                                                <div class="form-group m-2">
+                                                    <label for="service" class="text-dark">Name On Card</label>
+                                                    <input
+                                                        type="text"
+                                                        class="form-control"
+                                                        name="serviceCenterName"
+                                                        required
+                                                    />
+                                                </div>
+                                                <div class="form-group m-2">
+                                                    <label for="service" class="text-dark">Credit Card Number</label>
+                                                    <input
+                                                        type="text"
+                                                        class="form-control"
+                                                        name="serviceCenterName"
+                                                        required
+                                                    />
+                                                </div>
+                                                <div class="form-group m-2">
+                                                    <label for="service" class="text-dark">CVV</label>
+                                                    <input
+                                                        type="text"
+                                                        class="form-control"
+                                                        name="serviceCenterName"
+                                                        required
+                                                    />
+                                                </div>
+                                                <div class="form-group m-2">
+                                                    <label for="service" class="text-dark">Expiry MM/YY</label>
+                                                    <input
+                                                        type="text"
+                                                        class="form-control"
+                                                        name="serviceCenterName"
+                                                        required
+                                                    />
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="form-group modal-footer">
+                                        <button [attr.id]="'closeAppointmentActionModel'+i" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary" (click)="markPaymentDone(appointment._id)">Pay Rs.{{appointment.service.serviceCharges}}</button>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                </div>
+             </div>
+        </div>
+        <div class="tab-pane fade " id="history" role="tabpanel" aria-labelledby="history-tab">
+           
+        </div>
+      </div>
+  </div>
+
+  <script>
+    document.getElementById('payhere-payment').onclick = function (e) {
+        payhere.startPayment(payment);
+    };
+  </script>

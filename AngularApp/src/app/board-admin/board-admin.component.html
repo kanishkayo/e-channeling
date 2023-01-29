@@ -1,0 +1,478 @@
+<div class="container mt-2">
+        <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isLoggedIn">
+             Logged in as <strong>Admin.</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+    
+  </div>
+
+  <div class="container-fluid">
+    <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="doctor-tab" data-toggle="tab" href="#doctor" role="tab" aria-controls="doctor" aria-selected="true">Doctors Details</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="service-tab" data-toggle="tab" href="#service" role="tab" aria-controls="service" aria-selected="false">Services</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="appointment-tab" data-toggle="tab" href="#appointment" role="tab" aria-controls="appointment" aria-selected="false">Appointments</a>
+          </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="doctor" role="tabpanel" aria-labelledby="doctor-tab">
+            <div class="row">
+                <div class="col-md-10 mt-5 mb-3">
+                    <!-- <div class="text-center mt-5 mb-5"> -->
+                        <h3>Doctor Details</h3>
+                    <!-- </div> -->
+                </div>
+                <div class="col-md-2 mt-5 mb-3">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalScrollable">
+                        Add New Doctor
+                    </button>
+                    
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable" role="document">
+                        <div class="modal-content">
+                            
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalScrollableTitle">Doctor Registration Form</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                                <form
+                                    name="formDoctor"
+                                    (ngSubmit)="f.form.valid && onSubmitRegisterDoctor()"
+                                    #f="ngForm"
+                                    novalidate
+                                >
+                                
+                                    <div class="form-group m-2">
+                                    <label for="email">Email</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="email"
+                                        [(ngModel)]="formDoctor.email"
+                                        #email="ngModel"
+                                        required
+                                    />
+                                    </div>
+                                    <div class="form-group m-2">
+                                        <label for="name">Name</label>
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            [(ngModel)]="formDoctor.name"
+                                            #name="ngModel"
+                                            class="form-control"
+                                            required
+                                        />
+                                        </div>
+                                    <div class="form-group m-2">
+                                        <label for="mobile">Mobile</label>
+                                        <input
+                                            type="text"
+                                            name="mobile"
+                                            [(ngModel)]="formDoctor.mobile"
+                                            #mobile="ngModel"
+                                            class="form-control"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="form-group m-2">
+                                        <label for="nic">NIC</label>
+                                        <input
+                                            type="text"
+                                            name="nic"
+                                            [(ngModel)]="formDoctor.nic"
+                                            #nic="ngModel"
+                                            class="form-control"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="form-group m-2">
+                                        <label for="specialization">Specialization</label>
+                                        <input
+                                            type="text"
+                                            name="specialization"
+                                            [(ngModel)]="formDoctor.specialization"
+                                            #specialization="ngModel"
+                                            class="form-control"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="form-group m-2">
+                                        <label for="eduQualification">Highest Educational Qualification</label>
+                                        <input
+                                            type="text"
+                                            name="eduQualification"
+                                            [(ngModel)]="formDoctor.eduQualification"
+                                            #eduQualification="ngModel"
+                                            class="form-control"
+                                            required
+                                        />
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="form-group modal-footer">
+                            <button id="closeDoctorModel" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" (click)="onSubmitRegisterDoctor()">Save</button>
+                            </div>
+                            <div class="alert alert-warning" *ngIf="isSignUpFailed">
+                                Signup failed!<br />{{ errorMessage }}
+                              </div>
+                        
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+            
+
+            <table class="table table-sm table-dark table-hover">
+                <thead>
+                  <tr class="bg-primary">
+                    <th scope="col">Name</th>
+                    <th scope="col">E-mail</th>
+                    <th scope="col">NIC</th>
+                    <th scope="col">Contact No</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Edu Qualification</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let doctor of userService.doctorsList; let i = index;" [attr.data-index]="i">
+                    <td>{{doctor.name}}</td>
+                    <td>{{doctor.email}}</td>
+                    <td>{{doctor.nic}}</td>
+                    <td>{{doctor.mobile}}</td>
+                    <td>{{doctor.specialization}}</td>
+                    <td>{{doctor.eduQualification}}</td>
+                    <td><h5><span class="badge badge-success">Available</span></h5></td>
+                    <td>
+                        <button type="button" class="btn btn-info btn-block btn-sm" data-toggle="modal" [attr.data-target]="'#doctorEditModel'+i" (click)="parseDataForEditForm(doctor)">Edit Doctor Details</button>
+
+                      <!-- Modal -->
+                    <div class="modal fade" [attr.id]="'doctorEditModel'+i" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable" role="document">
+                        <div class="modal-content">
+                            
+                            <div class="modal-header">
+                            <h5 class="modal-title text-dark" id="exampleModalScrollableTitle">Doctor Details Update Form</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                                <form
+                                    name="formDoctor"
+                                    (ngSubmit)="f.form.valid && onSubmitUpdateDoctor(i)"
+                                    #f="ngForm"
+                                    novalidate
+                                >
+                                
+                                    <div class="form-group m-2 text-dark">
+                                    <label for="email">Email</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="email"
+                                        [(ngModel)]="formDoctor.email"
+                                        #email="ngModel"
+                                        required
+                                        disabled
+                                    />
+                                    </div>
+                                    <div class="form-group m-2 text-dark">
+                                        <label for="name">Name</label>
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            [(ngModel)]="formDoctor.name"
+                                            #name="ngModel"
+                                            class="form-control"
+                                            required
+                                        />
+                                        </div>
+                                    <div class="form-group m-2 text-dark">
+                                        <label for="mobile">Mobile</label>
+                                        <input
+                                            type="text"
+                                            name="mobile"
+                                            [(ngModel)]="formDoctor.mobile"
+                                            #mobile="ngModel"
+                                            class="form-control"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="form-group m-2 text-dark">
+                                        <label for="nic">NIC</label>
+                                        <input
+                                            type="text"
+                                            name="nic"
+                                            [(ngModel)]="formDoctor.nic"
+                                            #nic="ngModel"
+                                            class="form-control"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="form-group m-2 text-dark">
+                                        <label for="specialization">Specialization</label>
+                                        <input
+                                            type="text"
+                                            name="specialization"
+                                            [(ngModel)]="formDoctor.specialization"
+                                            #specialization="ngModel"
+                                            class="form-control"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="form-group m-2 text-dark">
+                                        <label for="eduQualification">Highest Educational Qualification</label>
+                                        <input
+                                            type="text"
+                                            name="eduQualification"
+                                            [(ngModel)]="formDoctor.eduQualification"
+                                            #eduQualification="ngModel"
+                                            class="form-control"
+                                            required
+                                        />
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="form-group modal-footer">
+                            <button [attr.id]="'closeDoctorUpdateModel'+i" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" (click)="onSubmitUpdateDoctor(i)">Save Update Details</button>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    
+                    </td>
+                    
+                  </tr>
+                </tbody>
+              </table>
+        </div>
+        <div class="tab-pane fade" id="service" role="tabpanel" aria-labelledby="service-tab">
+            <div class="row">
+                <div class="col-md-10 mt-5 mb-3">
+                    <!-- <div class="text-center mt-5 mb-5"> -->
+                        <h3>Service and Package Details</h3>
+                    <!-- </div> -->
+                </div>
+                <div class="col-md-2 mt-5 mb-3">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#serviceModal">
+                        Add New Service
+                    </button>
+                    
+                    <!-- Modal -->
+                    <div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="serviceModalTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable" role="document">
+                        <div class="modal-content">
+                            
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="serviceModalTitle">Service Registration Form</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                                <form
+                                    name="formService"
+                                    (ngSubmit)="f.form.valid && onSubmitRegisterService()"
+                                    #f="ngForm"
+                                    novalidate
+                                >
+                                
+                                    <div class="form-group m-2">
+                                    <label for="serviceName">Service Name</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="serviceName"
+                                        [(ngModel)]="formService.serviceName"
+                                        #serviceName="ngModel"
+                                        required
+                                    />
+                                    </div>
+                                    <div class="form-group m-2">
+                                        <label for="serviceDescription">Service Description</label>
+                                        <input
+                                            type="text"
+                                            name="serviceDescription"
+                                            [(ngModel)]="formService.serviceDescription"
+                                            #serviceDescription="ngModel"
+                                            class="form-control"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="form-group m-2">
+                                        <label for="serviceCharges">Service Charges (Rs.)</label>
+                                        <input
+                                            type="text"
+                                            name="serviceCharges"
+                                            [(ngModel)]="formService.serviceCharges"
+                                            #serviceCharges="ngModel"
+                                            class="form-control"
+                                            required
+                                        />
+                                    </div>
+                                    
+                                </form>
+                            </div>
+                            <div class="form-group modal-footer">
+                            <button id="closeServiceModel" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" (click)="onSubmitRegisterService()">Save</button>
+                            </div>
+                        
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            <table class="table table-sm table-dark table-hover">
+                <thead>
+                  <tr class="bg-primary">
+                    <th scope="col">Service Name</th>
+                    <th scope="col">Service Description</th>
+                    <th scope="col">Service Charges</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let service of userService.serviceList; let i = index;" [attr.data-index]="i">
+                    <td>{{service.serviceName}}</td>
+                    <td>{{service.serviceDescription}}</td>
+                    <td>{{"Rs."+service.serviceCharges}}</td>
+                    <td><button type="button" class="btn btn-success" data-toggle="modal" [attr.data-target]="'#serviceEditModel'+i" (click)="parseDataForServiceEditForm(service)">Edit</button></td>
+                    <div class="modal fade" [attr.id]="'serviceEditModel'+i" tabindex="-1" role="dialog" aria-labelledby="serviceModalTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable" role="document">
+                        <div class="modal-content">
+                            
+                            <div class="modal-header">
+                            <h5 class="modal-title text-dark" id="serviceModalTitle">Service Registration Form</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                                <form
+                                    name="formService"
+                                    (ngSubmit)="f.form.valid && onSubmitUpdateService(i)"
+                                    #f="ngForm"
+                                    novalidate
+                                >
+                                
+                                    <div class="form-group m-2 text-dark">
+                                    <label for="serviceName">Service Name</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="serviceName"
+                                        [(ngModel)]="formService.serviceName"
+                                        #serviceName="ngModel"
+                                        required
+                                    />
+                                    </div>
+                                    <div class="form-group m-2 text-dark">
+                                        <label for="serviceDescription">Service Description</label>
+                                        <input
+                                            type="text"
+                                            name="serviceDescription"
+                                            [(ngModel)]="formService.serviceDescription"
+                                            #serviceDescription="ngModel"
+                                            class="form-control"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="form-group m-2 text-dark">
+                                        <label for="serviceCharges">Service Charges (Rs.)</label>
+                                        <input
+                                            type="text"
+                                            name="serviceCharges"
+                                            [(ngModel)]="formService.serviceCharges"
+                                            #serviceCharges="ngModel"
+                                            class="form-control"
+                                            required
+                                        />
+                                    </div>
+                                    
+                                </form>
+                            </div>
+                            <div class="form-group modal-footer">
+                            <button [attr.id]="'closeServiceModel'+i" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" (click)="onSubmitUpdateService(i)">Save</button>
+                            </div>
+                        
+                        </div>
+                        </div>
+                    </div>
+                  </tr>
+                </tbody>
+              </table>
+        </div>
+        <div class="tab-pane fade" id="appointment" role="tabpanel" aria-labelledby="appointment-tab">
+            <div class="row mt-5">
+                <div class="col-md-6">
+                    <h3>Appointments List</h3>
+                </div>
+                <div class="col-md-12 mt-3">
+                    <table class="table table-sm table-dark table-hover">
+                        <thead>
+                          <tr class="bg-primary">
+                            <th scope="col">No</th>
+                            <th scope="col">Appointment No</th>
+                            <th scope="col">Service Name</th>
+                            <th scope="col">Patient Name</th>
+                            <th scope="col">Patient Mobile / Address</th>
+                            <th scope="col">Doctor Name</th>
+                            <th scope="col">Hospital Branch</th>
+                            <th scope="col">Appointment Date</th>
+                            <th scope="col">Service Charges</th>
+                            <th scope="col">Payment Status</th>
+                            <th scope="col">Appointment Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let appointment of allAppointments; let i = index;" [attr.data-index]="i">
+                            <td>{{i + 1}}</td>
+                            <td>{{"Appointment - "+appointment._id}}</td>
+                            <td>{{appointment.service.serviceName}}</td>
+                            <td>{{appointment.patient.username}}</td>
+                            <td>{{appointment.patient.mobile + " - " + appointment.patient.address}}</td>
+                            <td>{{appointment.doctor.name}}</td>
+                            <td>{{appointment.center.name + " - " + appointment.center.location}}</td>
+                            <td>{{appointment.date}}</td>
+                            <td>{{"Rs."+appointment.service.serviceCharges}}</td>
+                            <td>
+                                <h5 *ngIf="appointment.paymentStatus == 'not-paid'"><span class="badge badge-danger">Service Charge Not Paid</span></h5>
+                                <h5 *ngIf="appointment.paymentStatus == 'paid'"><span class="badge badge-success">Service Charge Paid</span></h5>
+                            </td>
+                            <td>
+                                <h5 *ngIf="appointment.status == 'doctor-pending'"><span class="badge badge-warning">Doctor Reviewing</span></h5>
+                                <h5 *ngIf="appointment.status == 'doctor-accept'"><span class="badge badge-success">Doctor Accepted</span></h5>
+                                <h5 *ngIf="appointment.status == 'doctor-rejected'"><span class="badge badge-danger">Doctor Rejected</span></h5>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+
+
+                      
+                </div>
+             </div>
+        </div>
+      </div>
+  </div>
